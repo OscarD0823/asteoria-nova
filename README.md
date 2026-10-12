@@ -1,17 +1,23 @@
 # Prisma Slides
 
-![Logo de Prisma Slides](logo.svg)
+[Usar la aplicación](https://oscard0823.github.io/prisma-slides/) · [Prisma completo](https://oscard0823.github.io/prisma/)
 
-**[Abrir Prisma Slides](https://oscard0823.github.io/prisma-slides/)**
+Presentaciones locales compatibles con PPTX. Gratuito, instalable y con archivos procesados en el dispositivo. Autor: [OscarD0823](https://github.com/OscarD0823).
 
-Presentaciones locales compatibles con PPTX. Aplicación web instalable que trabaja con documentos en el dispositivo. Autor: [OscarD0823](https://github.com/OscarD0823).
+Este repositorio contiene el código propio del programa en `src/` y sus pruebas en `tests/`. Los motores compartidos y el entorno se mantienen en [prisma](https://github.com/OscarD0823/prisma). El editor independiente y el de la suite usan estos mismos módulos; no hay una copia que editar por separado.
 
-Esta página es una publicación independiente de Prisma Slides, con su propio manifiesto, recursos y caché de aplicación. Solo abre el editor Prisma Slides.
+## Desarrollo
 
-[Descargar Windows y Android](https://github.com/OscarD0823/prisma-pdf/releases/tag/slides-v0.3.0) · [Código compartido y licencia](https://github.com/OscarD0823/prisma-pdf) · [Página de proyectos](https://oscard0823.github.io/Pagina-Principal/)
+Con Node 22 y pnpm 11: `pnpm dev`, `pnpm build`, `pnpm test`. El lanzador enlaza este repositorio con el entorno Prisma y clona las aplicaciones necesarias. También puedes abrir `prisma.code-workspace` desde el repositorio general y editar todos los programas juntos. `PRISMA_WORKSPACE_ROOT` selecciona un entorno existente.
 
-## Publicación
+Confirma los cambios con Git y ejecuta `pnpm publish:pages`: publica el programa y solicita la publicación de Prisma. Un push directo publica este programa; Prisma comprueba cambios automáticamente cada 15 minutos, sujeto al tiempo de cola de GitHub Actions. No se necesitan tokens adicionales para la comprobación periódica.
 
-El flujo `pages.yml` compila este producto desde el código público de `OscarD0823/prisma-pdf`, rama `main`, y lo publica en este repositorio con GitHub Pages. Para actualizarlo, ejecuta ese flujo desde Actions. La compilación incluye el código fuente correspondiente descargable desde la aplicación. No hay documentos de usuarios en el repositorio ni en la publicación.
+## Distribución y compatibilidad
 
-Las funciones de Office y los formatos admitidos tienen los límites documentados en el repositorio compartido. Los proyectos locales no se sincronizan automáticamente entre dispositivos.
+[Windows y Android 0.3.1](https://github.com/OscarD0823/prisma-pdf/releases/tag/slides-v0.3.1). Los instaladores existentes conservan sus identidades y rutas de actualización. La compilación de nuevos instaladores se realiza desde el entorno común.
+
+La compatibilidad con Office es parcial; consulta [el estado y los pendientes](https://github.com/OscarD0823/prisma/blob/main/docs/ESTADO-Y-PENDIENTES.md). No se ejecuta VBA completo ni se promete reproducir todos los formatos propietarios.
+
+## Procedencia y licencia
+
+Código trasladado desde `OscarD0823/prisma-pdf`, commit `a742c87ddd8e51ece4601c4acb80d4d756482cd2`; su historia anterior sigue disponible allí. Licencia AGPL-3.0-or-later. Los recursos de terceros conservan sus avisos en el repositorio del entorno. No se incluyen archivos privados de usuarios.
