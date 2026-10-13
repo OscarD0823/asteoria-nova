@@ -58,7 +58,16 @@ function elementXml(el:PrismaElement){
 }
 function tableXml(el:PrismaElement){const rows=el.rows??[],cols=rows[0]?.length??1;return '<a:tbl xmlns:a="'+A+'"><a:tblPr firstRow="1" bandRow="1"/><a:tblGrid>'+Array.from({length:cols},(_,i)=>'<a:gridCol w="'+Math.round(el.columnWidths?.[i]??el.transform.offset.cx/cols)+'"/>').join('')+'</a:tblGrid>'+rows.map(row=>'<a:tr h="'+Math.round(el.transform.offset.cy/rows.length)+'">'+row.map(cell=>'<a:tc><a:txBody>'+textXml(cell.text?.paragraphs??[{runs:[]}])+'</a:txBody><a:tcPr><a:solidFill><a:srgbClr val="F4F1FA"/></a:solidFill></a:tcPr></a:tc>').join('')+'</a:tr>').join('')+'</a:tbl>';}
 export function addElement(slide:PrismaSlide,spec:any){const id=String(Math.max(1,...slide.elements.map(el=>Number(el.id)||1))+1),el:PrismaElement={id,name:spec.kind+' '+id,type:spec.kind==='textbox'?'textbox':'shape',shape:spec.kind==='textbox'?'rect':spec.kind,rawXml:'',transform:{offset:{...spec.offset},rot:0},dirty:true,fillColor:spec.fillColor,text:spec.paragraphs?{paragraphs:spec.paragraphs}:undefined};slide.elements.push(el);return el;}
-export function setElementFont(slide:PrismaSlide,id:string,format:any){const el=slide.elements.find(e=>e.id===id);if(!el?.text)return;for(const p of el.text.paragraphs)for(const run of p.runs){Object.assign(run,format);if(format.fontSizePt!==undefined)run.fontSize=format.fontSizePt;}el.dirty=true;}
+export function setElementFont(slide:PrismaSlide,id:string,format:any){
+ const el=slide.elements.find(e=>e.id===id);if(!el)return;
+ const bodies=el.text?[el.text]:el.rows?.flat().map(cell=>cell.text).filter(Boolean)??[];
+ if(!bodies.length)return;
+ for(const body of bodies)for(const p of body.paragraphs){
+  if(!p.runs.length)p.runs.push({text:'',fontFamily:'Carlito',fontSize:18});
+  for(const run of p.runs){Object.assign(run,format);if(format.fontSizePt!==undefined)run.fontSize=format.fontSizePt;}
+ }
+ el.dirty=true;
+}
 export function addTable(opened:PrismaPresentation,index:number,spec:any){const slide=opened.deck.slides[index],el=addElement(slide,{kind:'table',offset:spec.offset});el.type='table';el.text=undefined;el.rows=Array.from({length:spec.rows},()=>Array.from({length:spec.cols},()=>({text:{paragraphs:[{runs:[]}]}})));return {slide,elementId:el.id};}
 export function editTableCellText(slide:PrismaSlide,id:string,row:number,col:number,ps:PrismaParagraph[]){const el=slide.elements.find(e=>e.id===id);if(!el?.rows?.[row]?.[col])throw Error('Celda inexistente.');el.rows[row][col].text={paragraphs:ps};el.dirty=true;}
 function addRelationship(archive:PrismaArchive,file:string,id:string,target:string,type:string){const name=relPath(file),doc=parse(archive.readText(name)||'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'),root=doc.documentElement!,node=all(doc,'Relationship').find(n=>attr(n,'Id')===id)??doc.createElementNS('http://schemas.openxmlformats.org/package/2006/relationships','Relationship');node.setAttribute('Id',id);node.setAttribute('Target',target);node.setAttribute('Type',R+'/'+type);if(!node.parentNode)root.appendChild(node);archive.writeText(name,serialize(doc));}
