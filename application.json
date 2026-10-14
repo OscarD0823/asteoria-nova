@@ -1,7 +1,9 @@
 {
   "product": "slides",
-  "name": "Prisma Slides",
-  "website": "https://oscard0823.github.io/prisma-slides/",
-  "sourceRepository": "OscarD0823/prisma-pdf",
+  "name": "Asteoria Nova",
+  "channel": "beta",
+  "website": "https://oscard0823.github.io/asteoria-nova/",
+  "sourceRepository": "OscarD0823/asteoria-nova",
+  "sharedRepository": "OscarD0823/asteoria",
   "sourceRef": "main"
 }

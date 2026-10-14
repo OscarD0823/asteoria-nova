@@ -2,7 +2,7 @@ import * as engine from './prisma-presentation';
 import {creationTemplate} from '@prisma/core/template-catalog';
 const E=914400;
 export const presentationDesigns=[
- {id:'prisma',name:'Prisma',accent:'#6254c8',background:'#ffffff',text:'#293246'},
+ {id:'prisma',name:"ASTEORIA",accent:'#6254c8',background:'#ffffff',text:'#293246'},
  {id:'ocean',name:'Océano',accent:'#147d80',background:'#f2faf9',text:'#214348'},
  {id:'ink',name:'Tinta',accent:'#bdafe9',background:'#24213c',text:'#ffffff'},
  {id:'sand',name:'Arena',accent:'#a46b39',background:'#fcf7ef',text:'#514235'},

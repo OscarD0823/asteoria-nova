@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createPresentation,presentationEngine as engine,openPresentation,changeSlideText,EMU,slideText,collectRenderFonts} from '@prisma/slides/slides-core';
 import {renderPrismaSlide} from '@prisma/slides/prisma-slide-render';
 import {unzipSync} from 'fflate';
-test('Prisma Slides creates editable PPTX and preserves untouched parts after text, table and image edits',async()=>{
+test("Asteoria Nova creates editable PPTX and preserves untouched parts after text, table and image edits",async()=>{
  const model=await createPresentation(),slide=model.deck.slides[0];
  const text=engine.addElement(slide,{kind:'textbox',offset:{x:EMU,y:EMU,cx:6*EMU,cy:EMU},paragraphs:[{runs:[{text:'Título original',fontFamily:'Carlito',fontSize:28}]}]});
  engine.setSlideNotes(model,0,'Nota del presentador');const original=await engine.savePptx(model),reopened=await openPresentation(original);assert.deepEqual(await engine.savePptx(reopened),original);
