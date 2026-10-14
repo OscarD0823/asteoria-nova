@@ -1,6 +1,7 @@
 import {DOMParser,XMLSerializer} from '@xmldom/xmldom';
 import {readOfficePackage,writeOfficePackage,xmlEscape as esc} from '@prisma/writer/prisma-ooxml';
 import {strFromU8,strToU8} from 'fflate';
+import {prismaPackageMetadata} from '@prisma/core/package-metadata';
 export const EMU=914400;
 const P='http://schemas.openxmlformats.org/presentationml/2006/main',A='http://schemas.openxmlformats.org/drawingml/2006/main',R='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const child=(el:any,name:string)=>Array.from(el?.childNodes??[]).find((n:any)=>n.nodeType===1&&n.localName===name) as any;
@@ -33,9 +34,9 @@ function parseElement(node:any,archive:PrismaArchive,file:string):PrismaElement{
  const table=all(node,'tbl')[0];if(table){element.type='table';element.rows=children(table).filter(n=>n.localName==='tr').map(row=>children(row).filter(n=>n.localName==='tc').map(cell=>({text:{paragraphs:paragraphs(child(cell,'txBody'))},rawXml:serialize(cell)})));element.columnWidths=children(child(table,'tblGrid')).map(col=>Number(attr(col,'w','1')));}
  return element;
 }
-export async function createBlankPptx(){const {default:PptxGenJS}=await import('pptxgenjs');const presentation=new PptxGenJS();presentation.layout='LAYOUT_WIDE';presentation.author='Prisma';presentation.theme={headFontFace:'Carlito',bodyFontFace:'Carlito'};presentation.addSlide();return new Uint8Array(await presentation.write({outputType:'arraybuffer'}) as ArrayBuffer);}
+export async function createBlankPptx(){const {default:PptxGenJS}=await import('pptxgenjs');const presentation=new PptxGenJS();presentation.layout='LAYOUT_WIDE';presentation.author='Prisma';presentation.theme={headFontFace:'Carlito',bodyFontFace:'Carlito'};presentation.addSlide();return prismaPackageMetadata(new Uint8Array(await presentation.write({outputType:'arraybuffer'}) as ArrayBuffer),'Prisma');}
 export async function openPptx(bytes:Uint8Array):Promise<PrismaPresentation>{
- const archive=new PrismaArchive(readOfficePackage(bytes)),xml=archive.readText('ppt/presentation.xml');if(!xml)throw Error('Selecciona una presentación PowerPoint Open XML.');
+ const archive=new PrismaArchive(readOfficePackage(bytes)),xml=archive.readText('ppt/presentation.xml');if(!xml)throw Error('Selecciona una presentación PPTX Open XML.');
  const presentation=parse(xml),size=all(presentation,'sldSz')[0],rels=archive.relationships('ppt/presentation.xml'),paths=all(presentation,'sldId').map(s=>rels[s.getAttributeNS(R,'id')||attr(s,'r:id')]).filter(Boolean);
  if(!paths.length||paths.length>2000)throw Error('La presentación debe contener entre 1 y 2.000 diapositivas.');
  const slides=paths.map((file:string)=>{const rawXml=archive.readText(file)!;if(!rawXml)throw Error('Falta una diapositiva.');const doc=parse(rawXml),tree=all(doc,'spTree')[0],bg=all(doc,'bg')[0],transition=all(doc,'transition')[0];return {path:file,rawXml,elements:children(tree).filter(n=>!['nvGrpSpPr','grpSpPr','extLst'].includes(n.localName)).map(n=>parseElement(n,archive,file)),background:bg?{color:'#'+attr(all(bg,'srgbClr')[0],'val','FFFFFF')}:undefined,transition:children(transition)[0]?.localName??'none',notes:getSlideNotes(archive,file),deleted:[]};});
