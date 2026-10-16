@@ -1,9 +1,9 @@
 {
   "product": "slides",
-  "name": "Asteoria Nova",
+  "name": "Auralis Nova",
   "channel": "beta",
-  "website": "https://oscard0823.github.io/asteoria-nova/",
-  "sourceRepository": "OscarD0823/asteoria-nova",
+  "website": "https://oscard0823.github.io/auralis-nova/",
+  "sourceRepository": "OscarD0823/auralis-nova",
   "sharedRepository": "OscarD0823/asteoria",
   "sourceRef": "main"
 }

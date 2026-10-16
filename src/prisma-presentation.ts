@@ -34,7 +34,7 @@ function parseElement(node:any,archive:PrismaArchive,file:string):PrismaElement{
  const table=all(node,'tbl')[0];if(table){element.type='table';element.rows=children(table).filter(n=>n.localName==='tr').map(row=>children(row).filter(n=>n.localName==='tc').map(cell=>({text:{paragraphs:paragraphs(child(cell,'txBody'))},rawXml:serialize(cell)})));element.columnWidths=children(child(table,'tblGrid')).map(col=>Number(attr(col,'w','1')));}
  return element;
 }
-export async function createBlankPptx(){const {default:PptxGenJS}=await import('pptxgenjs');const presentation=new PptxGenJS();presentation.layout='LAYOUT_WIDE';presentation.author="ASTEORIA";presentation.theme={headFontFace:'Carlito',bodyFontFace:'Carlito'};presentation.addSlide();return prismaPackageMetadata(new Uint8Array(await presentation.write({outputType:'arraybuffer'}) as ArrayBuffer),"ASTEORIA");}
+export async function createBlankPptx(){const {default:PptxGenJS}=await import('pptxgenjs');const presentation=new PptxGenJS();presentation.layout='LAYOUT_WIDE';presentation.author="Auralis";presentation.theme={headFontFace:'Carlito',bodyFontFace:'Carlito'};presentation.addSlide();return prismaPackageMetadata(new Uint8Array(await presentation.write({outputType:'arraybuffer'}) as ArrayBuffer),"Auralis");}
 export async function openPptx(bytes:Uint8Array):Promise<PrismaPresentation>{
  const archive=new PrismaArchive(readOfficePackage(bytes)),xml=archive.readText('ppt/presentation.xml');if(!xml)throw Error('Selecciona una presentación PPTX Open XML.');
  const presentation=parse(xml),size=all(presentation,'sldSz')[0],rels=archive.relationships('ppt/presentation.xml'),paths=all(presentation,'sldId').map(s=>rels[s.getAttributeNS(R,'id')||attr(s,'r:id')]).filter(Boolean);
